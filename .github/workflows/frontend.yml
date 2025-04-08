@@ -27,7 +27,7 @@ jobs:
 
       - name: Run tests
         working-directory: ./frontend
-        run: npm test -- --watchAll=false
+        run: npx vitest run
 
       - name: Build project
         working-directory: ./frontend
