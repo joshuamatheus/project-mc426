@@ -20,14 +20,29 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
         working-directory: ./frontend
         run: npm install
 
+      - name: Lint code
+        working-directory: ./frontend
+        run: npm run lint
+
       - name: Run tests
         working-directory: ./frontend
         run: npx vitest run
+
+      - name: Generate test coverage
+        working-directory: ./frontend
+        run: npm run test:coverage
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: frontend/coverage
 
       - name: Build project
         working-directory: ./frontend
