@@ -5,3 +5,4 @@ O software a ser desenvolvido é um jogo baseado em geolocalização que combina
 Integrantes:
 
 Joshua Matheus Ramos da Silva - RA 220670
+Luiz Eduardo Silva Salustriano - RA 183139
