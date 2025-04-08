@@ -1,0 +1,56 @@
+# macOS
+.DS_Store
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.log
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+
+# IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# VS Code
+.vscode/
+
+# Logs
+logs/
+*.log
+
+# Spring Boot
+*.db
+*.h2.db
+*.mv.db
+
+# Node (React)
+node_modules/
+dist/
+build/
+.env
+.env.local
+.env.*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# React/Vite specific
+.vite/
+coverage/
+
+# OS files
+Thumbs.db
+Desktop.ini
