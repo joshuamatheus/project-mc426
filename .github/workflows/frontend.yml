@@ -27,14 +27,14 @@ jobs:
 
       - name: Run tests
         working-directory: ./frontend
-        run: npm test -- --watchAll=false
+        run: npx vitest run
 
       - name: Build project
         working-directory: ./frontend
         run: npm run build
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: frontend-build
           path: frontend/dist/
