@@ -23,6 +23,11 @@ jobs:
           cache: 'npm'
           cache-dependency-path: '**/package.json'
 
+      - name: Clean node_modules and lock file
+        working-directory: ./frontend
+        run: |
+          rm -rf node_modules package-lock.json
+
       - name: Install dependencies
         working-directory: ./frontend
         run: npm install
