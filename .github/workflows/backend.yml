@@ -30,6 +30,7 @@ jobs:
       - name: Run tests
         working-directory: ./backend
         run: mvn test --no-transfer-progress
+        # run: pytest --disable-warnings -q
 
       - name: Check code style
         working-directory: ./backend
