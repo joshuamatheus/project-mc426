@@ -6,5 +6,5 @@ Integrantes:
 
 Joshua Matheus Ramos da Silva - RA 220670  
 Luiz Eduardo Silva Salustriano - RA 183139  
-Jonatas de Sousa Santos - RA 225334 
+Jonatas de Sousa Santos - RA 225334
 Matheus Rufino da Silva - RA 221756
