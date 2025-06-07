@@ -1,0 +1,9 @@
+fastapi==0.115.12
+pydantic-settings~=2.8.1
+uvicorn[standard]
+sqlalchemy
+alembic         # optional (for migrations)
+python-jose[cryptography]
+bcrypt==3.2.0
+passlib==1.7.4
+python-dotenv
