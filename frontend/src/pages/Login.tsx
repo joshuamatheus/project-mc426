@@ -12,11 +12,9 @@ export default function Login() {
     try {
       const resp = await api.post("/auth/login", { email, password });
       const { access_token } = resp.data;
-      // Armazena o token no localStorage
       localStorage.setItem("token", access_token);
-      // Já configuramos o interceptor do axios, então tudo vai passar o header
-      // Redireciona para setup de avatar
-      navigate("/avatar-setup");
+      // Redireciona diretamente para o mapa
+      navigate("/map");
     } catch (err: any) {
       if (err.response && err.response.status === 401) {
         alert("Email ou senha inválidos.");
@@ -70,6 +68,9 @@ export default function Login() {
           Entrar
         </button>
       </form>
+      <p style={{ marginTop: "1rem", textAlign: "center" }}>
+        Não tem uma conta? <a href="/register">Cadastre-se</a>
+      </p>
     </div>
   );
 }

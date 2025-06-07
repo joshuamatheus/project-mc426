@@ -19,7 +19,7 @@ export default function Register() {
         team,
       });
       // Cadastro OK: redireciona para setup de avatar
-      navigate("/avatar-setup");
+      navigate("/map");
     } catch (err: any) {
       if (err.response && err.response.data.detail) {
         alert("Erro: " + err.response.data.detail);
@@ -34,14 +34,14 @@ export default function Register() {
       <h2>Cadastro de Jogador</h2>
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: "0.75rem" }}>
-          <label>Nome:</label>
+          <label>Nickname:</label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
             style={{ width: "100%", padding: "0.5rem" }}
-            placeholder="Nome completo"
+            placeholder="ex: jogadora123"
           />
         </div>
 
