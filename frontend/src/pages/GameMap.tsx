@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, CircleMarker, useMap, Popup} from "react-leaflet";
-import L from "leaflet";
+import { MapContainer, TileLayer, Marker, CircleMarker, useMap, Popup } from "react-leaflet";
 import api from "../api/api";
 import PlayerMenu from "../components/PlayerMenu";
 import pointsOfInterest from "../assets/pointsOfInterest.json";
@@ -42,22 +41,19 @@ const iconMap: Record<string, string> = {
   parking: "🅿"
 };
 
-// Centraliza o mapa na posição atual
 function MapInitializer({ position }: { position: [number, number] }) {
   const map = useMap();
-
   useEffect(() => {
     map.setView(position, 17);
   }, [position]);
-
   return null;
 }
 
 export default function GameMap() {
   const [position, setPosition] = useState<[number, number] | null>(null);
   const [playerAvatar, setPlayerAvatar] = useState("🎓");
+  const [collectedMessage, setCollectedMessage] = useState<string | null>(null);
 
-  // Pega avatar do jogador
   useEffect(() => {
     async function fetchPlayerAvatar() {
       try {
@@ -72,20 +68,16 @@ export default function GameMap() {
     fetchPlayerAvatar();
   }, []);
 
-  // Pega a última posição do jogador
   useEffect(() => {
     async function fetchLatest() {
       try {
         const resp = await api.get<Location>("/location/latest");
         setPosition([resp.data.latitude, resp.data.longitude]);
-      } catch {
-        // tudo bem se não houver posição ainda
-      }
+      } catch {}
     }
     fetchLatest();
   }, []);
 
-  // Atualiza a posição em tempo real
   useEffect(() => {
     if (!navigator.geolocation) {
       alert("Seu navegador não suporta Geolocalização.");
@@ -96,7 +88,6 @@ export default function GameMap() {
       async (pos) => {
         const { latitude, longitude } = pos.coords;
         setPosition([latitude, longitude]);
-
         try {
           await api.post("/location/update", { latitude, longitude });
         } catch (err) {
@@ -113,9 +104,27 @@ export default function GameMap() {
     return () => navigator.geolocation.clearWatch(watcherId);
   }, []);
 
-  // Avatar personalizado
   const handleAvatarUpdate = (newAvatar: string) => {
     setPlayerAvatar(newAvatar);
+  };
+
+  const handleCollect = async (poi: PointOfInterest) => {
+    if (!position) return;
+
+    try {
+      const resp = await api.post("/rewards/collect", {
+        latitude: position[0],
+        longitude: position[1],
+        name: poi.name
+      });
+
+      setCollectedMessage("🥚 Ovo coletado! Abrindo em 3 segundos...");
+      setTimeout(() => {
+        setCollectedMessage("🐣 O ovo chocou! (em breve: criatura revelada)");
+      }, 3000);
+    } catch (err: any) {
+      alert(err.response?.data?.detail || "Erro ao coletar ovo.");
+    }
   };
 
   if (!position) {
@@ -124,15 +133,16 @@ export default function GameMap() {
 
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 0 }}>
-      <MapContainer 
+      <MapContainer
         center={position}
         zoom={17}
         minZoom={15}
         maxZoom={19}
         maxBounds={[[-22.82678, -47.0942], [-22.8120, -47.03891]]}
         maxBoundsViscosity={1.0}
-        style={{ height: "100%", width: "100%" }}>
-      <TileLayer
+        style={{ height: "100%", width: "100%" }}
+      >
+        <TileLayer
           attribution='&copy; OpenStreetMap contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
@@ -148,18 +158,35 @@ export default function GameMap() {
 
         {/* Pontos fixos */}
         {pointsOfInterest.map((poi, index) => (
-          <Marker
-            key={index}
-            position={[poi.latitude, poi.longitude]}
-          >
+          <Marker key={index} position={[poi.latitude, poi.longitude]}>
             <Popup>
               {iconMap[poi.type] || "❓"} <strong>{poi.name}</strong>
+              <br />
+              <button onClick={() => handleCollect(poi)}>Coletar ovo</button>
             </Popup>
           </Marker>
         ))}
 
         <MapInitializer position={position} />
       </MapContainer>
+
+      {collectedMessage && (
+        <div
+          style={{
+            position: "absolute",
+            top: 20,
+            left: "50%",
+            transform: "translateX(-50%)",
+            backgroundColor: "#fff",
+            padding: "1rem",
+            borderRadius: "8px",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+            zIndex: 1000
+          }}
+        >
+          {collectedMessage}
+        </div>
+      )}
 
       <PlayerMenu onAvatarUpdate={handleAvatarUpdate} />
     </div>

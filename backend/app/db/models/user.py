@@ -3,6 +3,8 @@ from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.db.session import Base
 
+from app.db.models.collected_reward import CollectedReward
+
 class User(Base):
     __tablename__ = "users"
 
@@ -16,3 +18,8 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     locations = relationship("PlayerLocation", back_populates="user")
+    rewards = relationship(
+    "app.db.models.collected_reward.CollectedReward",
+    back_populates="user",
+    cascade="all, delete"
+    )
