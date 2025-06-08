@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, CircleMarker, useMap, Popup} from "react-leaflet";
 import L from "leaflet";
 import api from "../api/api";
 import PlayerMenu from "../components/PlayerMenu";
+import pointsOfInterest from "../assets/pointsOfInterest.json";
 
 interface Location {
   latitude: number;
@@ -21,24 +22,27 @@ interface Player {
   created_at: string;
 }
 
-// Função para criar ícone personalizado com emoji
-function createEmojiIcon(emoji: string = "🎓") {
-  return L.divIcon({
-    html: `<div style="
-      font-size: 24px;
-      text-align: center;
-      line-height: 1;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-      filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
-    ">${emoji}</div>`,
-    className: 'emoji-marker',
-    iconSize: [30, 30],
-    iconAnchor: [15, 15],
-    popupAnchor: [0, -15],
-  });
+interface PointOfInterest {
+  name: string;
+  type: string;
+  latitude: number;
+  longitude: number;
 }
 
-// Componente auxiliar para centralizar o mapa após renderização
+const iconMap: Record<string, string> = {
+  library: "📚",
+  square: "🌳",
+  building: "🏢",
+  restaurant: "🍽",
+  auditorium: "🏛",
+  gym: "🏋",
+  bank: "🏦",
+  museum: "🏺",
+  school: "🏫",
+  parking: "🅿"
+};
+
+// Centraliza o mapa na posição atual
 function MapInitializer({ position }: { position: [number, number] }) {
   const map = useMap();
 
@@ -52,16 +56,14 @@ function MapInitializer({ position }: { position: [number, number] }) {
 export default function GameMap() {
   const [position, setPosition] = useState<[number, number] | null>(null);
   const [playerAvatar, setPlayerAvatar] = useState("🎓");
-  const [playerIcon, setPlayerIcon] = useState(createEmojiIcon());
 
-  // Recupera dados do jogador para o avatar
+  // Pega avatar do jogador
   useEffect(() => {
     async function fetchPlayerAvatar() {
       try {
         const resp = await api.get<Player>("/users/me");
         if (resp.data.avatar) {
           setPlayerAvatar(resp.data.avatar);
-          setPlayerIcon(createEmojiIcon(resp.data.avatar));
         }
       } catch (error) {
         console.error("Erro ao carregar avatar do jogador:", error);
@@ -70,20 +72,20 @@ export default function GameMap() {
     fetchPlayerAvatar();
   }, []);
 
-  // Recupera a última posição do servidor
+  // Pega a última posição do jogador
   useEffect(() => {
     async function fetchLatest() {
       try {
         const resp = await api.get<Location>("/location/latest");
         setPosition([resp.data.latitude, resp.data.longitude]);
       } catch {
-        // Se não existe nenhuma posição salva, pode esperar o watchPosition
+        // tudo bem se não houver posição ainda
       }
     }
     fetchLatest();
   }, []);
 
-  // Geolocalização em tempo real
+  // Atualiza a posição em tempo real
   useEffect(() => {
     if (!navigator.geolocation) {
       alert("Seu navegador não suporta Geolocalização.");
@@ -111,10 +113,9 @@ export default function GameMap() {
     return () => navigator.geolocation.clearWatch(watcherId);
   }, []);
 
-  // Função para atualizar o avatar (será chamada pelo PlayerMenu)
+  // Avatar personalizado
   const handleAvatarUpdate = (newAvatar: string) => {
     setPlayerAvatar(newAvatar);
-    setPlayerIcon(createEmojiIcon(newAvatar));
   };
 
   if (!position) {
@@ -122,29 +123,45 @@ export default function GameMap() {
   }
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 0,
-      }}
-    >
-      <MapContainer
+    <div style={{ position: "fixed", inset: 0, zIndex: 0 }}>
+      <MapContainer 
         center={position}
         zoom={17}
-        style={{ height: "100%", width: "100%" }}
-      >
-        <TileLayer
+        minZoom={15}
+        maxZoom={19}
+        maxBounds={[[-22.82678, -47.0942], [-22.8120, -47.03891]]}
+        maxBoundsViscosity={1.0}
+        style={{ height: "100%", width: "100%" }}>
+      <TileLayer
           attribution='&copy; OpenStreetMap contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <Marker position={position} icon={playerIcon} />
+
+        {/* Jogador */}
+        <CircleMarker
+          center={position}
+          radius={8}
+          pathOptions={{ color: "#007bff", fillColor: "#007bff", fillOpacity: 1 }}
+        >
+          <Popup>Você está aqui {playerAvatar}</Popup>
+        </CircleMarker>
+
+        {/* Pontos fixos */}
+        {pointsOfInterest.map((poi, index) => (
+          <Marker
+            key={index}
+            position={[poi.latitude, poi.longitude]}
+          >
+            <Popup>
+              {iconMap[poi.type] || "❓"} <strong>{poi.name}</strong>
+            </Popup>
+          </Marker>
+        ))}
+
         <MapInitializer position={position} />
       </MapContainer>
 
-      <PlayerMenu 
-        onAvatarUpdate={handleAvatarUpdate}
-      />
+      <PlayerMenu onAvatarUpdate={handleAvatarUpdate} />
     </div>
   );
 }

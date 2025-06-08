@@ -1,0 +1,18 @@
+[
+  { "name": "Biblioteca Central", "type": "library", "latitude": -22.81635, "longitude": -47.07132 },
+  { "name": "Praça do Ciclo Básico", "type": "square", "latitude": -22.8171, "longitude": -47.06974 },
+  { "name": "IMECC", "type": "building", "latitude": -22.81594, "longitude": -47.06791 },
+  { "name": "Bandejão Central", "type": "restaurant", "latitude": -22.81752, "longitude": -47.07217 },
+  { "name": "Centro de Convenções", "type": "auditorium", "latitude": -22.81472, "longitude": -47.07149 },
+  { "name": "FEEC (Engenharia Elétrica)", "type": "building", "latitude": -22.82103, "longitude": -47.06645 },
+  { "name": "IC3 (Instituto de Computação)", "type": "building", "latitude": -22.81365, "longitude": -47.06392 },
+  { "name": "Ginásio Multidisciplinar", "type": "gym", "latitude": -22.81475, "longitude": -47.0709 },
+  { "name": "Banco Santander", "type": "bank", "latitude": -22.81692, "longitude": -47.06869 },
+  { "name": "Banco do Brasil", "type": "bank", "latitude": -22.81373, "longitude": -47.07054 },
+  { "name": "Museu Exploratório de Ciências", "type": "museum", "latitude": -22.81489, "longitude": -47.05762 },
+  { "name": "Plasma", "type": "library", "latitude": -22.81672, "longitude": -47.06409 },
+  { "name": "Reitoria", "type": "building", "latitude": -22.82423, "longitude": -47.06698 },
+  { "name": "Cantina do Bello", "type": "restaurant", "latitude": -22.8186, "longitude": -47.06958 },
+  { "name": "DGA (Diretoria Geral da Administração)", "type": "building", "latitude": -22.82397, "longitude": -47.06643 },
+  { "name": "Praça da Paz", "type": "square", "latitude": -22.8224, "longitude": -47.06775 }
+]
