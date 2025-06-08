@@ -25,11 +25,9 @@ class UserOut(BaseModel):
     trainer_name: Optional[str] = None
     created_at: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class AvatarChoice(BaseModel):
     avatar: str
     trainer_type: str
     model_config = ConfigDict(from_attributes=True)
-

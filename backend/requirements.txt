@@ -1,9 +1,14 @@
 fastapi==0.115.12
 pydantic-settings~=2.8.1
+pydantic[email]
 uvicorn[standard]
 sqlalchemy
-alembic         # optional (for migrations)
+alembic
 python-jose[cryptography]
 bcrypt==3.2.0
 passlib==1.7.4
 python-dotenv
+# Test dependencies
+pytest
+pytest-asyncio
+httpx
