@@ -88,9 +88,6 @@ env/
 *.DS_Store
 Thumbs.db
 
-# Arquivos do Pydantic gerados
-*.json
-
 # Arquivos de builds
 dist/
 build/
@@ -102,6 +99,3 @@ pip-delete-this-directory.txt
 
 # Arquivos específicos do Windows
 desktop.ini
-
-# VS Code Launch config (opcional, se quiser manter só settings)
-.vscode/launch.json

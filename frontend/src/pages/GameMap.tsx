@@ -4,19 +4,38 @@ import L from "leaflet";
 import api from "../api/api";
 import PlayerMenu from "../components/PlayerMenu";
 
-// Ícone do jogador
-const playerIcon = new L.Icon({
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-});
-
 interface Location {
   latitude: number;
   longitude: number;
   distance_traveled: number;
   timestamp: string;
+}
+
+interface Player {
+  id: number;
+  name: string;
+  email: string;
+  team: string;
+  avatar?: string;
+  trainer_type?: string;
+  created_at: string;
+}
+
+// Função para criar ícone personalizado com emoji
+function createEmojiIcon(emoji: string = "🎓") {
+  return L.divIcon({
+    html: `<div style="
+      font-size: 24px;
+      text-align: center;
+      line-height: 1;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+      filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+    ">${emoji}</div>`,
+    className: 'emoji-marker',
+    iconSize: [30, 30],
+    iconAnchor: [15, 15],
+    popupAnchor: [0, -15],
+  });
 }
 
 // Componente auxiliar para centralizar o mapa após renderização
@@ -32,6 +51,24 @@ function MapInitializer({ position }: { position: [number, number] }) {
 
 export default function GameMap() {
   const [position, setPosition] = useState<[number, number] | null>(null);
+  const [playerAvatar, setPlayerAvatar] = useState("🎓");
+  const [playerIcon, setPlayerIcon] = useState(createEmojiIcon());
+
+  // Recupera dados do jogador para o avatar
+  useEffect(() => {
+    async function fetchPlayerAvatar() {
+      try {
+        const resp = await api.get<Player>("/users/me");
+        if (resp.data.avatar) {
+          setPlayerAvatar(resp.data.avatar);
+          setPlayerIcon(createEmojiIcon(resp.data.avatar));
+        }
+      } catch (error) {
+        console.error("Erro ao carregar avatar do jogador:", error);
+      }
+    }
+    fetchPlayerAvatar();
+  }, []);
 
   // Recupera a última posição do servidor
   useEffect(() => {
@@ -74,6 +111,12 @@ export default function GameMap() {
     return () => navigator.geolocation.clearWatch(watcherId);
   }, []);
 
+  // Função para atualizar o avatar (será chamada pelo PlayerMenu)
+  const handleAvatarUpdate = (newAvatar: string) => {
+    setPlayerAvatar(newAvatar);
+    setPlayerIcon(createEmojiIcon(newAvatar));
+  };
+
   if (!position) {
     return <div>Carregando mapa e localização...</div>;
   }
@@ -99,7 +142,9 @@ export default function GameMap() {
         <MapInitializer position={position} />
       </MapContainer>
 
-      <PlayerMenu />
+      <PlayerMenu 
+        onAvatarUpdate={handleAvatarUpdate}
+      />
     </div>
   );
 }
