@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Dragao",
+    "image_url": "/img/dragao-rgb.png",
+    "grayscale_image_url": "/img/dragao-preto.png",
+    "poi_type": "bank"
+  },
+  {
+    "name": "Rinoceronte",
+    "image_url": "/img/rinoceronte-rgb.png",
+    "grayscale_image_url": "/img/rinoceronte-preto.png",
+    "poi_type": "building"
+  },
+  {
+    "name": "Coyote",
+    "image_url": "/img/coyote-rgb.png",
+    "grayscale_image_url": "/img/coyote-preto.png",
+    "poi_type": "square"
+  }
+]

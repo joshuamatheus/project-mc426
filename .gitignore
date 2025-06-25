@@ -54,3 +54,48 @@ coverage/
 # OS files
 Thumbs.db
 Desktop.ini
+# Bytecode Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Diretórios de testes
+.pytest_cache/
+.coverage
+.tox/
+.nox/
+htmlcov/
+
+# Ambientes virtuais
+.venv/
+venv/
+ENV/
+env/
+*.env
+*.env.*
+
+# Editor/IDE configs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Arquivos temporários do sistema
+*.log
+*.tmp
+*.swp
+*.DS_Store
+Thumbs.db
+
+# Arquivos de builds
+dist/
+build/
+*.egg-info/
+
+# Arquivos do pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Arquivos específicos do Windows
+desktop.ini
