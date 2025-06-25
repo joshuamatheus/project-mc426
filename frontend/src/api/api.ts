@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Altere para o endereço onde seu FastAPI está rodando:
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = "http://localhost:9000";
 
 const api = axios.create({
   baseURL: API_BASE_URL,

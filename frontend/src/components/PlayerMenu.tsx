@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 import AvatarSelector from "./AvatarSelector";
+import creatures from "../assets/creatures.json";
 
 interface Player {
   id: number;
@@ -11,6 +12,15 @@ interface Player {
   avatar?: string;
   trainer_type?: string;
   created_at: string;
+}
+interface Creature {
+  name: string;
+  image_url: string;
+  grayscale_image_url: string;
+}
+
+interface CapturedCreature {
+  creature_name: string;
 }
 
 interface PlayerMenuProps {
@@ -22,6 +32,8 @@ export default function PlayerMenu({ onAvatarUpdate }: PlayerMenuProps) {
   const [showMenu, setShowMenu] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [showAvatarSelector, setShowAvatarSelector] = useState(false);
+  const [showCreatureCollection, setShowCreatureCollection] = useState(false);
+  const [capturedCreatures, setCapturedCreatures] = useState<CapturedCreature[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,7 +45,18 @@ export default function PlayerMenu({ onAvatarUpdate }: PlayerMenuProps) {
         alert("Erro ao carregar dados do jogador.");
       }
     }
+
+    async function fetchCreatures() {
+      try {
+        const response = await api.get<CapturedCreature[]>("/creatures");
+        setCapturedCreatures(response.data);
+      } catch (error) {
+        console.error("Erro ao carregar criaturas capturadas:", error);
+      }
+    }
+
     fetchProfile();
+    fetchCreatures();
   }, []);
 
   function handleLogout() {
@@ -152,6 +175,22 @@ export default function PlayerMenu({ onAvatarUpdate }: PlayerMenuProps) {
           </button>
 
           <button
+            onClick={() => setShowCreatureCollection(true)}
+            style={{
+              marginTop: "0.5rem",
+              width: "100%",
+              padding: "0.4rem",
+              backgroundColor: "#2196F3",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+          >
+            Coleção de Criaturas
+          </button>
+
+          <button
             onClick={handleLogout}
             style={{
               marginTop: "0.5rem",
@@ -251,6 +290,61 @@ export default function PlayerMenu({ onAvatarUpdate }: PlayerMenuProps) {
           onAvatarSelected={handleAvatarSelected}
           onClose={() => setShowAvatarSelector(false)}
         />
+      )}
+
+      {/* Modal da Coleção de Criaturas */}
+      {showCreatureCollection && (
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            background: "white",
+            color: "black",
+            padding: "1.5rem",
+            borderRadius: "12px",
+            boxShadow: "0 0 20px rgba(0,0,0,0.2)",
+            zIndex: 2000,
+            minWidth: "300px",
+            textAlign: "left",
+          }}
+        >
+          <h3 style={{ margin: 0, marginBottom: "1rem" }}>Coleção de Criaturas</h3>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+            {creatures.map((creature) => { // Usar 'creatures' (todas as criaturas)
+              const captured = capturedCreatures.find(c => c.creature_name === creature.name);
+              return (
+                <div key={creature.name} style={{ width: '150px', height: '150px', overflow: 'hidden' }}>
+                  <img
+                    src={captured ? creature.image_url : creature.grayscale_image_url} // Escolher a imagem correta
+                    alt={creature.name}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'contain',
+                    }}
+                  />
+                </div>
+              );
+            })}
+          </div>
+          <button
+            onClick={() => setShowCreatureCollection(false)}
+            style={{
+              marginTop: "1rem",
+              width: "100%",
+              padding: "0.5rem",
+              backgroundColor: "#888",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+          >
+            Fechar
+          </button>
+        </div>
       )}
     </>
   );

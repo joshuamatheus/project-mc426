@@ -19,7 +19,11 @@ class User(Base):
 
     locations = relationship("PlayerLocation", back_populates="user")
     rewards = relationship(
-    "app.db.models.collected_reward.CollectedReward",
-    back_populates="user",
+        "app.db.models.collected_reward.CollectedReward",
+        back_populates="user",
+        cascade="all, delete"
+    )
+    creatures = relationship("CapturedCreature", 
+    back_populates="user", 
     cascade="all, delete"
     )
